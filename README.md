@@ -1,6 +1,6 @@
 # Vuelto App
 
-[![CI](https://github.com/MauriMartinezz/vuelto-app/actions/workflows/ci.yml/badge.svg)](https://github.com/MauriMartinezz/grana-bank/actions/workflows/ci.yml)
+[![CI](https://github.com/MauriMartinezz/vuelto-app/actions/workflows/ci.yml/badge.svg)](https://github.com/MauriMartinezz/vuelto-app/actions/workflows/ci.yml)
 
 **Demo:** [_LINK_](https://github.com/MauriMartinezz/vuelto-app)
 
