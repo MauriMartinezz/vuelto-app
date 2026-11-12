@@ -17,7 +17,7 @@ Branch: `chore/rebrand-vuelto` (work-unit commits; not pushed). Delivery strateg
 
 ## Tasks
 
-- [x] T1 (S1, S2) Playwright setup (dependency, config, global setup with isolated DB, script, vitest exclusion, README) + the five flows, with flow (2) proven RED on `f563857`. Route: delegated (long-session context backstop on the parent). Risk: item 5 (new dev dependency and browser download). Evidence: `pnpm test:e2e` 7/7 passed three times; flow (2) RED on `f563857`; Vitest 1076/1076, tsc and lint clean. Uncommitted.
+- [x] T1 (S1, S2) Playwright setup (dependency, config, global setup with isolated DB, script, vitest exclusion, README) + the five flows, with flow (2) proven RED on `f563857`. Route: delegated (long-session context backstop on the parent). Risk: item 5 (new dev dependency and browser download). Evidence: `pnpm test:e2e` 7/7 passed three times; flow (2) RED on `f563857`; Vitest 1076/1076, tsc and lint clean. Commit `b488c94`.
 
 ## Log
 
@@ -25,3 +25,4 @@ Branch: `chore/rebrand-vuelto` (work-unit commits; not pushed). Delivery strateg
 - L2 (2026-11-12, parent): proposed Playwright, an isolated e2e DB and five first flows; asked whether to include CI from the start.
 - L3 (2026-11-12, user answer): see S2. Reminder saved in memory (`e2e-ci-reminder`).
 - L4 (2026-11-12, writer T1): `@playwright/test` 1.64.1 pinned (1.65.0 was under two weeks old), Chromium only. `playwright.config.ts` runs `tsx e2e/setup-db.ts && next build && next start --port 3100` as the `webServer` with `DATABASE_URL` on `vuelto_e2e`, `reuseExistingServer: false`, one worker. The DB setup (create with `pg` if missing, `prisma migrate deploy`, `prisma db seed` with test-only passwords from `e2e/env.ts`) is the first step of that command instead of `globalSetup`, because `next build` already needs the migrated database and the command guarantees the order. Production build chosen over `next dev`: closer to a deploy with Cache Components and no clash with a `next dev` in the same checkout. Specs: `login`, `access`, `movement-category`, `transfer`, `finances` (7 tests). RED on `f563857` (worktree with its own `pnpm install --offline`; a symlinked `node_modules` makes Turbopack fail with "Could not find the Next.js package"): `movement-category.spec.ts:22` expected `option:checked` "Comida", received "Sin categoría". GREEN on the current tree. Vitest excludes `e2e/**`. Next: CI integration (S2, later; reminder kept by the parent).
+- L5 (2026-11-12, reconciliation): T1 commit recorded.
