@@ -37,6 +37,8 @@ async function createDatabaseIfMissing() {
 function prisma(...args: string[]) {
   execFileSync("pnpm", ["exec", "prisma", ...args], {
     stdio: "inherit",
+    // On Windows pnpm is a .cmd shim, which Node only runs through a shell.
+    shell: process.platform === "win32",
     env: {
       ...process.env,
       // Explicit values win over .env (dotenv never overrides them).

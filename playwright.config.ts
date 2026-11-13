@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import { E2E_BASE_URL, E2E_DATABASE_URL, E2E_PORT } from "./e2e/env";
+import { E2E_BASE_URL, E2E_DATABASE_URL, E2E_DIST_DIR, E2E_PORT } from "./e2e/env";
 
 /**
  * End-to-end tests (`pnpm test:e2e`), local only for now. They run against a
@@ -38,6 +38,7 @@ export default defineConfig({
     // The build log is long; errors still show through stderr.
     stdout: "ignore",
     stderr: "pipe",
-    env: { DATABASE_URL: E2E_DATABASE_URL },
+    // Its own build directory, so `pnpm build`/`pnpm start` output is never replaced.
+    env: { DATABASE_URL: E2E_DATABASE_URL, NEXT_DIST_DIR: E2E_DIST_DIR },
   },
 });

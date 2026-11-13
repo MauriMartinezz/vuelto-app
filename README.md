@@ -160,6 +160,8 @@ Sin secreto, el botón **Procesar pagos agendados**, al final de Servicios, ejec
 | `docker compose down` | Detiene PostgreSQL y conserva sus datos |
 | `docker compose down -v` | Detiene PostgreSQL y borra sus datos; después hay que correr `db:up`, `db:migrate` y `db:seed` |
 
+Si tenés un volumen creado antes del cambio de nombre a Vuelto (usuario `grana`, base `grana_bank`), PostgreSQL no aplica las credenciales nuevas a datos que ya existen: el healthcheck falla y `DATABASE_URL` no se conecta. Corré `docker compose down -v` una vez y después `db:up`, `db:migrate` y `db:seed`.
+
 
 ## Tests e2e
 
@@ -172,7 +174,7 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-Usa su propia base, `vuelto_e2e`, en el mismo PostgreSQL de Docker: la crea si no existe, le aplica las migraciones y la vuelve a cargar con el seed en cada corrida, así que la base de desarrollo `vuelto` y tu `.env` no se tocan. Compila la app y la sirve en http://localhost:3100, así que puede correr con `pnpm dev` abierto en el puerto 3000. Las contraseñas de los usuarios de esa base son valores de prueba definidos en `e2e/env.ts`. Si un test falla, `pnpm exec playwright show-report` abre el reporte.
+Usa su propia base, `vuelto_e2e`, en el mismo PostgreSQL de Docker: la crea si no existe, le aplica las migraciones y la vuelve a cargar con el seed en cada corrida, así que la base de desarrollo `vuelto` y tu `.env` no se tocan. Compila la app en su propia carpeta, `.next-e2e`, y la sirve en http://localhost:3100, así que puede correr con `pnpm dev` abierto en el puerto 3000 y no reemplaza la compilación de `pnpm build` que usa `pnpm start`. Las contraseñas de los usuarios de esa base son valores de prueba definidos en `e2e/env.ts`. Si un test falla, `pnpm exec playwright show-report` abre el reporte.
 
 ## Probarlo
 
