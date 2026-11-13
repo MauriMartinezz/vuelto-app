@@ -20,7 +20,8 @@ export default async function AdminPromotionsPage() {
         <h2 id="new-promotion" className="mb-4 font-serif text-xl font-bold">
           Nueva promoción
         </h2>
-        <PromotionForm />
+        {/* A new count remounts the form after a create, clearing a failed earlier submit. */}
+        <PromotionForm key={promotions.length} />
       </section>
 
       <section aria-labelledby="all-promotions" className="mt-8">

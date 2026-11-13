@@ -66,9 +66,12 @@ export type ValidPromotion = {
   conditions: string;
 };
 
-/** A `YYYY-MM-DD` calendar date as a UTC midnight, or null when impossible. */
+/**
+ * A `YYYY-MM-DD` calendar date as a UTC midnight, or null when impossible.
+ * The year cannot start with 0: Date.UTC maps years 0-99 to 1900-1999.
+ */
 function parseDate(raw: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw.trim());
+  const match = /^([1-9]\d{3})-(\d{2})-(\d{2})$/.exec(raw.trim());
   if (!match) return null;
   const [year, month, day] = match.slice(1).map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));

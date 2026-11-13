@@ -128,6 +128,17 @@ describe("validatePromotion", () => {
     });
   });
 
+  it("rejects a year starting with 0 instead of storing it as 19xx", () => {
+    expect(validatePromotion(input({ validFrom: "0026-11-01" }))).toEqual({
+      ok: false,
+      errors: { validFrom: PROMOTION_MESSAGES.date },
+    });
+    expect(validatePromotion(input({ validUntil: "0099-12-31" }))).toEqual({
+      ok: false,
+      errors: { validUntil: PROMOTION_MESSAGES.date },
+    });
+  });
+
   it("rejects impossible dates and an end before the start", () => {
     expect(validatePromotion(input({ validFrom: "2026-02-31" }))).toEqual({
       ok: false,
