@@ -42,7 +42,7 @@ Branch: `feat/accounts` (from `feat/transfers` at 72b0f05). Delivery strategy: `
 - [x] T16 (S19) delegated: Spanish database names via @map.
 - [x] T14 (S16) delegated: ask before saving a new contact.
 - [x] T12 (S14) delegated: group movements by date and filter Movimientos by date.
-- [ ] T7 inline: README, seam check, browser checks. Partial: README (`0d01db6`, `81d6b72`, `7fc0d69`) and browser checks (L22) done; no seam check recorded.
+- [x] T7 inline: README, seam check, browser checks. README (`0d01db6`, `81d6b72`, `7fc0d69`), browser checks (L22), seam check on 2026-11-13.
 
 Route evidence: the parent context is past the long-session backstop, so units are delegated (context reason). T2–T6 depend on T1 and start after it, with disjoint edit surfaces. Risk: T1 item 1 (migration moves stored data) and T3/T4 item 4 (balance updates under locks): independent verifier after T1 and at the end.
 
@@ -79,3 +79,4 @@ Route evidence: the parent context is past the long-session backstop, so units a
 - L29 (2026-11-03): Independent verifier on 7c44605 (BigInt): no blockers; S15 and S17 pass. 26 money values identical after the upgrade, CHECKs intact, exact arithmetic and formatting up to 2^63−1, money conserved in 20-way concurrent transfers and exchanges with no deadlock or double charge, 1.15M format comparisons with 0 diffs, fresh data after every action in the same session. Advisory: the old cookies() log could not be reproduced at baseline either, so its absence proves nothing; the route-group revalidation matches the Next docs.
 - L30 (2026-11-03, user): "En movimientos, el selector de Desde y Hasta aparecerán colapsados, en plan los filtros de fecha podrán ser Hoy, últimos 7 días, este mes y otra opción que esté colapsada y que al presionarla abra el filtro de Desde - Hasta y que se pueda borrar todos los filtros". Done inline in features/movements/movement-filters.tsx: "Elegir fechas" toggles the range (aria-expanded), a hand-picked range stays open, "Borrar filtros" clears search, type and dates. 12 checks in `next dev` with 0 console errors.
 - L31 (2026-11-12, reconciliation): T9 and T10 checked off (commits `2525ab3`, `40bbe16`); T7 stays open only for the seam check.
+- L32 (2026-11-13, seam check): full suite on the docker Postgres, `pnpm test` 80 files / 1081 tests passed, `tsc --noEmit` and `pnpm lint` clean. T7 closed.
