@@ -1,10 +1,10 @@
-# GranaBank
+# Vuelto App
 
-[![CI](https://github.com/MauriMartinezz/grana-bank/actions/workflows/ci.yml/badge.svg)](https://github.com/MauriMartinezz/grana-bank/actions/workflows/ci.yml)
+[![CI](https://github.com/MauriMartinezz/vuelto-app/actions/workflows/ci.yml/badge.svg)](https://github.com/MauriMartinezz/grana-bank/actions/workflows/ci.yml)
 
-**Demo:** [_LINK_](https://github.com/MauriMartinezz/grana-bank)
+**Demo:** [_LINK_](https://github.com/MauriMartinezz/vuelto-app)
 
-Prueba técnica realizada para el Club Atlético Lanús hecha en NextJS + Postgres simulando una billetera virtual. 
+Aplicación que simula billetera virtual.
 
 
 ## Documentación
@@ -97,8 +97,8 @@ Corepack viene con Node.js; si falta `pnpm`, corré `corepack enable` una vez.
 
 ```bash
 # 1. Obtener el código
-git clone git@github.com:MauriMartinezz/grana-bank.git
-cd grana-bank
+git clone git@github.com:MauriMartinezz/vuelto-app.git
+cd vuelto-app
 
 # 2. Configurar el entorno (los valores por defecto sirven para la base de Docker)
 cp .env.example .env
