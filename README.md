@@ -165,7 +165,7 @@ Si tenés un volumen creado antes del cambio de nombre a Vuelto (usuario `grana`
 
 ## Tests e2e
 
-Playwright recorre en Chromium los flujos principales: el ingreso de un usuario y del administrador, el acceso a las pantallas privadas, cambiar la categoría de un movimiento, una transferencia vista desde los dos lados y Finanzas con sus presupuestos. Por ahora se corren solo en local.
+Playwright recorre en Chromium los flujos principales: el ingreso de un usuario y del administrador, el acceso a las pantallas privadas, cambiar la categoría de un movimiento, una transferencia vista desde los dos lados y Finanzas con sus presupuestos. Corren en local y en CI, en el job `e2e` de GitHub Actions, que sube el reporte de Playwright como artefacto cuando falla.
 
 Requisitos: la base de Docker levantada (`pnpm db:up`) y el navegador de Playwright instalado una vez:
 

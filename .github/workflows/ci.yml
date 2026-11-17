@@ -70,3 +70,62 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  e2e:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Same database server as the check job; the e2e setup creates and seeds
+    # its own `vuelto_e2e` database on it (see e2e/setup-db.ts).
+    services:
+      db:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: vuelto
+          POSTGRES_PASSWORD: vuelto
+          POSTGRES_DB: vuelto
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U vuelto -d vuelto"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+
+    # prisma.config.ts needs it to load, even for `prisma generate`. The e2e
+    # setup and the app under test override it with the `vuelto_e2e` URL.
+    env:
+      DATABASE_URL: postgresql://vuelto:vuelto@localhost:5433/vuelto
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate the Prisma client
+        run: pnpm exec prisma generate
+
+      # Chromium plus the system libraries it needs on the runner.
+      - name: Install the Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Playwright's webServer prepares the database, builds and starts the app.
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+      - name: Upload the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
