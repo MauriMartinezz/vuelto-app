@@ -34,15 +34,15 @@ Branch: `feat/accounts` (from `feat/transfers` at 72b0f05). Delivery strategy: `
 - [x] T5 (S5) parallel: cards list and add-card form with brand validation.
 - [x] T6 (S1, S6) parallel: Perfil screen and bottom navigation item.
 - [x] T8 (S9) delegated: Perfil summary with one screen per change and password change. Commit 46e2334.
-- [ ] T9 (S10, S11) delegated: light/dark theme with a selector in Perfil; logout moves from the bottom bar to the end of Perfil.
-- [ ] T10 (S12) delegated: card on each movement, Home latest 6 with Consultar todos.
+- [x] T9 (S10, S11) delegated: light/dark theme with a selector in Perfil; logout moves from the bottom bar to the end of Perfil. Commit `2525ab3`.
+- [x] T10 (S12) delegated: card on each movement, Home latest 6 with Consultar todos. Commit `40bbe16`.
 - [x] T11 (S13) delegated: card detail with its movements; expiry in Buenos Aires time.
 - [x] T13 (S15, S17) delegated: balances and amounts as BigInt end to end; balance card format; verifier follow-ups.
 - [x] T15 (S18) delegated: Spanish route names.
 - [x] T16 (S19) delegated: Spanish database names via @map.
 - [x] T14 (S16) delegated: ask before saving a new contact.
 - [x] T12 (S14) delegated: group movements by date and filter Movimientos by date.
-- [ ] T7 inline: README, seam check, browser checks.
+- [x] T7 inline: README, seam check, browser checks. README (`0d01db6`, `81d6b72`, `7fc0d69`), browser checks (L22), seam check on 2026-11-13.
 
 Route evidence: the parent context is past the long-session backstop, so units are delegated (context reason). T2–T6 depend on T1 and start after it, with disjoint edit surfaces. Risk: T1 item 1 (migration moves stored data) and T3/T4 item 4 (balance updates under locks): independent verifier after T1 and at the end.
 
@@ -78,3 +78,5 @@ Route evidence: the parent context is past the long-session backstop, so units a
 - L28 (2026-11-03): T15 routes (d8126fc), T16 database names and T12 date grouping committed; 500 tests, tsc and eslint pass with all of them. T16 rename migration kept identical row hashes and sequence values on a throwaway DB and violates each renamed CHECK as expected; dev DB migrated.
 - L29 (2026-11-03): Independent verifier on 7c44605 (BigInt): no blockers; S15 and S17 pass. 26 money values identical after the upgrade, CHECKs intact, exact arithmetic and formatting up to 2^63−1, money conserved in 20-way concurrent transfers and exchanges with no deadlock or double charge, 1.15M format comparisons with 0 diffs, fresh data after every action in the same session. Advisory: the old cookies() log could not be reproduced at baseline either, so its absence proves nothing; the route-group revalidation matches the Next docs.
 - L30 (2026-11-03, user): "En movimientos, el selector de Desde y Hasta aparecerán colapsados, en plan los filtros de fecha podrán ser Hoy, últimos 7 días, este mes y otra opción que esté colapsada y que al presionarla abra el filtro de Desde - Hasta y que se pueda borrar todos los filtros". Done inline in features/movements/movement-filters.tsx: "Elegir fechas" toggles the range (aria-expanded), a hand-picked range stays open, "Borrar filtros" clears search, type and dates. 12 checks in `next dev` with 0 console errors.
+- L31 (2026-11-12, reconciliation): T9 and T10 checked off (commits `2525ab3`, `40bbe16`); T7 stays open only for the seam check.
+- L32 (2026-11-13, seam check): full suite on the docker Postgres, `pnpm test` 80 files / 1081 tests passed, `tsc --noEmit` and `pnpm lint` clean. T7 closed.

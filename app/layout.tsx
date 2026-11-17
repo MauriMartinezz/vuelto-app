@@ -5,6 +5,7 @@ import { balanceInitScript } from "@/features/account/balance-privacy";
 import { themeInitScript } from "@/features/profile/theme";
 import { ViewSync } from "@/features/profile/view-toggle";
 import { viewInitScript } from "@/features/profile/view";
+import { legacyStorageInitScript } from "@/lib/legacy-storage";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -18,12 +19,12 @@ const robotoSlab = Roboto_Slab({
 });
 
 export const metadata: Metadata = {
-  title: { default: "GranaBank", template: "%s · GranaBank" },
-  description: "Con cada compra, sumás orgullo granate",
+  title: { default: "Vuelto", template: "%s · Vuelto" },
+  description: "Tu plata, sin vueltas",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f1f2f5",
+  themeColor: "#efe9df",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -37,6 +38,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
+        {/* Moves pre-rebrand choices to the current keys; must run before the other scripts. */}
+        <script dangerouslySetInnerHTML={{ __html: legacyStorageInitScript }} />
         {/* Applies this device's theme before the first paint, on every page. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/* Hides the balance before the first paint when this device chose it. */}

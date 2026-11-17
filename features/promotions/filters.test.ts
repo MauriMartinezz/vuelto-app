@@ -4,7 +4,11 @@ import {
   cardText,
   daysText,
   discountText,
+  filterByCard,
+  minimumText,
+  heldBrands,
   promotionsHref,
+  readCardFilter,
   readPromotionFilters,
   validityText,
 } from "./filters";
@@ -53,6 +57,15 @@ describe("texts", () => {
     expect(discountText(20, BigInt(1_500_000))).toBe("20% hasta $15.000");
   });
 
+  it("says when the discount has no cap", () => {
+    expect(discountText(10, null)).toBe("10% sin límite");
+  });
+
+  it("writes the minimum purchase only when there is one", () => {
+    expect(minimumText(BigInt(3_000_000))).toBe("Compra mínima $30.000");
+    expect(minimumText(null)).toBeNull();
+  });
+
   it("names the days, every day and weekends", () => {
     expect(daysText([1, 3])).toBe("Lunes y miércoles");
     expect(daysText([2, 4, 6])).toBe("Martes, jueves y sábados");
@@ -72,11 +85,59 @@ describe("promotionsHref", () => {
     expect(promotionsHref("todos", null)).toBe("/promociones?dia=todos");
   });
 
+  it("adds the card only when one is selected", () => {
+    expect(promotionsHref("lunes", "CINE", "VISA")).toBe(
+      "/promociones?dia=lunes&categoria=cine&tarjeta=visa",
+    );
+    expect(promotionsHref("todos", null, null)).toBe("/promociones?dia=todos");
+  });
+
+  it("keeps the day and category filters unchanged next to a card", () => {
+    const url = new URL(promotionsHref("sabado", "FARMACIA", "AMEX"), "http://localhost");
+    const params = Object.fromEntries(url.searchParams);
+    expect(readPromotionFilters(params, 1)).toEqual({
+      day: "sabado",
+      weekday: 6,
+      category: "FARMACIA",
+    });
+    expect(readCardFilter(params.tarjeta, ["AMEX"])).toBe("AMEX");
+  });
+
   it("round-trips through readPromotionFilters", () => {
     const url = new URL(promotionsHref("sabado", "FARMACIA"), "http://localhost");
     expect(
       readPromotionFilters(Object.fromEntries(url.searchParams), 1),
     ).toEqual({ day: "sabado", weekday: 6, category: "FARMACIA" });
+  });
+});
+
+describe("card filter", () => {
+  it("offers each brand the user holds once, in a stable order", () => {
+    const accounts = [
+      { cards: [{ brand: "AMEX" as const }, { brand: "VISA" as const }] },
+      { cards: [{ brand: "VISA" as const }] },
+      { cards: [] },
+    ];
+    expect(heldBrands(accounts)).toEqual(["VISA", "AMEX"]);
+    expect(heldBrands([])).toEqual([]);
+  });
+
+  it("reads a held brand from the URL and every card otherwise", () => {
+    expect(readCardFilter("visa", ["VISA", "AMEX"])).toBe("VISA");
+    expect(readCardFilter("mastercard", ["VISA"])).toBeNull();
+    expect(readCardFilter("nada", ["VISA"])).toBeNull();
+    expect(readCardFilter(undefined, ["VISA"])).toBeNull();
+    expect(readCardFilter(["visa", "amex"], ["VISA", "AMEX"])).toBeNull();
+  });
+
+  it("keeps the promotions of the brand and those for every card", () => {
+    const rows = [
+      { id: "visa", cardBrand: "VISA" as const },
+      { id: "amex", cardBrand: "AMEX" as const },
+      { id: "any", cardBrand: null },
+    ];
+    expect(filterByCard(rows, "VISA").map((row) => row.id)).toEqual(["visa", "any"]);
+    expect(filterByCard(rows, null)).toEqual(rows);
   });
 });
 

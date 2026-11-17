@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The e2e suite builds into its own directory (see playwright.config.ts).
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   /* config options here */
   experimental: {
     agentFeedback: true,

@@ -60,9 +60,16 @@ export function readPromotionFilters(
   return { day: DAY_SLUGS[weekday - 1], weekday, category };
 }
 
-/** `20% hasta $15.000`. */
-export function discountText(percent: number, capCents: bigint) {
-  return `${percent}% hasta ${formatMoney(capCents, "ARS")}`;
+/** `20% hasta $15.000`, or `20% sin límite` when the discount has no cap. */
+export function discountText(percent: number, capCents: bigint | null) {
+  return capCents === null
+    ? `${percent}% sin límite`
+    : `${percent}% hasta ${formatMoney(capCents, "ARS")}`;
+}
+
+/** `Compra mínima $30.000`, or null when any purchase applies. */
+export function minimumText(minPurchaseCents: bigint | null) {
+  return minPurchaseCents === null ? null : `Compra mínima ${formatMoney(minPurchaseCents, "ARS")}`;
 }
 
 function capitalize(text: string) {
@@ -83,10 +90,39 @@ export function cardText(brand: CardBrand | null) {
   return brand ? `Solo ${BRAND_NAMES[brand]}` : "Todas tus tarjetas";
 }
 
-/** The list URL for a day and a category; every category when null. */
-export function promotionsHref(day: DaySlug, category: PromotionCategory | null) {
+/** The brands of the user's cards, each once, in the order of `BRAND_NAMES`. */
+export function heldBrands(accounts: { cards: { brand: CardBrand }[] }[]): CardBrand[] {
+  const held = new Set(accounts.flatMap((account) => account.cards.map((card) => card.brand)));
+  return (Object.keys(BRAND_NAMES) as CardBrand[]).filter((brand) => held.has(brand));
+}
+
+/** The card of the URL when the user holds it; every card otherwise. */
+export function readCardFilter(tarjeta: SearchParam, held: CardBrand[]): CardBrand | null {
+  const brand = typeof tarjeta === "string" ? tarjeta.toUpperCase() : null;
+  return held.find((b) => b === brand) ?? null;
+}
+
+/** The promotions of a brand plus those for every card; all when null. */
+export function filterByCard<T extends { cardBrand: CardBrand | null }>(
+  promotions: T[],
+  brand: CardBrand | null,
+): T[] {
+  if (brand === null) return promotions;
+  return promotions.filter((p) => p.cardBrand === null || p.cardBrand === brand);
+}
+
+/**
+ * The list URL for a day, a category and a card; every category and every
+ * card when null.
+ */
+export function promotionsHref(
+  day: DaySlug,
+  category: PromotionCategory | null,
+  card: CardBrand | null = null,
+) {
   const query = new URLSearchParams({ dia: day });
   if (category) query.set("categoria", category.toLowerCase());
+  if (card) query.set("tarjeta", card.toLowerCase());
   return `/promociones?${query}`;
 }
 
