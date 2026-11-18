@@ -21,7 +21,8 @@ export default defineConfig({
     baseURL: E2E_BASE_URL,
     locale: "es-AR",
     timezoneId: "America/Argentina/Buenos_Aires",
-    trace: "on-first-retry",
+    // retries is 0, so "on-first-retry" would never record one.
+    trace: "retain-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
