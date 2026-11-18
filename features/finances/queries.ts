@@ -36,6 +36,8 @@ export function listBudgets(userId: string, currency: Currency) {
 /**
  * The user's category ids, oldest first: a category's position here picks its
  * chart color, so it keeps the same one every month and after a rename.
+ * Deleting an older category shifts the position, and so the color, of every
+ * category created after it.
  */
 export async function listCategoryOrder(userId: string): Promise<string[]> {
   const categories = await db.category.findMany({

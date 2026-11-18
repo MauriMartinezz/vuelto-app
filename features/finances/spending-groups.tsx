@@ -124,8 +124,9 @@ function GroupRow({
         <div className="flex flex-col gap-4 border-t border-line p-4">
           {group.categoryId ? (
             <BudgetEditor
-              // A new key after a change resets the input to the saved amount.
-              key={`${group.categoryId}:${budget?.amountCents ?? "none"}`}
+              // Keyed by category only, so a save keeps its notice; the
+              // editor resets its own input to the saved amount.
+              key={group.categoryId}
               categoryId={group.categoryId}
               categoryName={group.name}
               currency={currency}
