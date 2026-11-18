@@ -32,7 +32,7 @@ export default async function AdminPromotionsPage() {
           <ul className="space-y-3">
             {promotions.map((promotion) => (
               <li key={promotion.id}>
-                <PromotionCard promotion={promotion} />
+                <PromotionCard promotion={promotion} linked={false} />
               </li>
             ))}
           </ul>
