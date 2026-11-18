@@ -18,8 +18,9 @@ const COLOR_CLASS: Record<string, string> = {
   rest: "bg-chart-rest",
 };
 
+// Slots past the last class (chart.ts keeps them below CHART_SLOTS) fall back to gray.
 function colorClass(color: ChartColor) {
-  return COLOR_CLASS[String(color)];
+  return COLOR_CLASS[String(color)] ?? COLOR_CLASS.rest;
 }
 
 /**
@@ -47,7 +48,7 @@ export function SpendingBar({
                 href={segmentHref(page, segment)}
                 aria-label={description}
                 title={description}
-                className={`flex w-full items-center rounded px-1.5 text-xs font-semibold whitespace-nowrap text-white transition hover:brightness-110 ${colorClass(segment.color)}`}
+                className={`flex w-full items-center rounded text-xs font-semibold whitespace-nowrap text-white transition hover:brightness-110 ${segment.showLabel ? "px-1.5" : ""} ${colorClass(segment.color)}`}
               >
                 {segment.showLabel && <span aria-hidden="true">{segment.percent}%</span>}
               </Link>

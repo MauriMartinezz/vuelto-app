@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { Currency } from "@/generated/prisma/client";
 import { removeBudget, saveBudget, type BudgetFormState, type RemoveBudgetState } from "./actions";
@@ -66,12 +66,14 @@ export function BudgetEditor({
 }) {
   const [state, action] = useActionState(saveBudget, undefined);
   const [removeState, removeAction] = useActionState(removeBudget, undefined);
+  // Both forms keep their last result; only the most recent one is shown.
+  const [last, setLast] = useState<"save" | "remove" | null>(null);
   const inputId = `budget-${categoryId}`;
-  const failed = Boolean(state && "error" in state);
+  const failed = last === "save" && Boolean(state && "error" in state);
 
   return (
     <div>
-      <form action={action}>
+      <form action={action} onSubmit={() => setLast("save")}>
         <input type="hidden" name="categoryId" value={categoryId} />
         <input type="hidden" name="currency" value={currency} />
         <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium">
@@ -83,6 +85,8 @@ export function BudgetEditor({
             name="amount"
             inputMode="decimal"
             autoComplete="off"
+            // A new saved amount remounts the input with it; an error keeps the text.
+            key={budget?.amount ?? "none"}
             defaultValue={state && "error" in state ? state.value : (budget?.amount ?? "")}
             placeholder="Por ejemplo: 150.000"
             aria-invalid={failed}
@@ -95,19 +99,20 @@ export function BudgetEditor({
             className="bg-garnet-fill text-white"
           />
         </div>
-        <Feedback state={state} id={`${inputId}-feedback`} />
+        <Feedback state={last === "save" ? state : undefined} id={`${inputId}-feedback`} />
       </form>
       {budget && (
-        <form action={removeAction} className="mt-2">
+        <form action={removeAction} onSubmit={() => setLast("remove")} className="mt-2">
           <input type="hidden" name="budgetId" value={budget.id} />
           <SubmitButton
             label={`Quitar presupuesto de ${categoryName}`}
             pendingLabel="Quitando…"
             className="px-0 text-garnet"
           />
-          <Feedback state={removeState} id={`${inputId}-remove-feedback`} />
         </form>
       )}
+      {/* Outside the remove form, which unmounts once the budget is gone. */}
+      <Feedback state={last === "remove" ? removeState : undefined} id={`${inputId}-remove-feedback`} />
     </div>
   );
 }
